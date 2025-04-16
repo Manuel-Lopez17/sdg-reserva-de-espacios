@@ -115,6 +115,16 @@ make bash
 
 ---
 
+## 🧪 Usuarios de prueba
+Puedes iniciar sesión usando los siguientes usuarios precargados por el seeder:
+
+Rol	  Email	            Contraseña
+Admin	admin@example.com	password
+User	john@example.com	password
+User	jane@example.com	password
+
+---
+
 ## 🧾 Licencia
 
 MIT © [Manuel López](https://github.com/Manuel-Lopez17)
