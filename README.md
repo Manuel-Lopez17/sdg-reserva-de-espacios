@@ -45,6 +45,37 @@ docker exec -it reserva_backend php artisan migrate
 
 ---
 
+## 🧪 Probar despliegue en otra máquina
+
+1. Construí la imagen en tu máquina:
+
+```bash
+docker build -t reserva-app-backend ./apps/backend
+docker build -t reserva-app-frontend ./apps/frontend
+```
+
+2. Exportá la imagen a un archivo:
+
+```bash
+docker save reserva-app-backend > backend.tar
+docker save reserva-app-frontend > frontend.tar
+```
+
+3. Copiá los `.tar` a la otra máquina (ej. usando `scp`, red o USB).
+
+4. En la otra máquina, importá las imágenes y corré el proyecto:
+
+```bash
+docker load < backend.tar
+docker load < frontend.tar
+
+docker compose up -d
+```
+
+5. Accedé a `http://localhost:5173` desde el navegador.
+
+---
+
 ## 🔍 Acceso a la app
 
 - **Frontend:** [http://localhost:5173](http://localhost:5173)
