@@ -9,18 +9,19 @@ export default function Login() {
   const [name, setName] = useState('')
   const [error, setError] = useState(null)
   const [isRegistering, setIsRegistering] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const navigate = useNavigate()
   const setAuth = useAuthStore(state => state.login)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
+    setIsSubmitting(true)
 
     try {
       if (isRegistering) {
         const res = await register({ name, email, password })
         if (res.user) {
-          // Hacemos login automático después del registro
           const loginRes = await login({ email, password })
           setAuth(loginRes.token, loginRes.user)
           navigate('/')
@@ -38,6 +39,8 @@ export default function Login() {
       console.error("Auth error", err)
       const msg = err.response?.data?.message || 'Error al iniciar sesión o registrar'
       setError(msg)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -55,7 +58,7 @@ export default function Login() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full p-2 border rounded"
-            required={isRegistering}
+            required
           />
         )}
 
@@ -88,9 +91,14 @@ export default function Login() {
 
         <button
           type="submit"
-          className="bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700 hover:cursor-pointer"
+          disabled={isSubmitting}
+          className={`w-full py-2 rounded text-white ${
+            isSubmitting
+              ? 'bg-blue-400 cursor-not-allowed'
+              : 'bg-blue-600 hover:bg-blue-700 hover:cursor-pointer'
+          }`}
         >
-          {isRegistering ? 'Registrarse' : 'Entrar'}
+          {isSubmitting ? 'Procesando...' : isRegistering ? 'Registrarse' : 'Entrar'}
         </button>
       </form>
     </div>

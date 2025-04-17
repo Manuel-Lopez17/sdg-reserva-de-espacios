@@ -16,12 +16,12 @@ services:
   frontend:
     build:
       context: ./apps/frontend
+      dockerfile: Dockerfile
     container_name: reserva_frontend
-    volumes:
-      - ./apps/frontend:/src
-      - /src/node_modules
     ports:
       - "5173:5173"
-    command: sh -c "pnpm install && pnpm run dev"
-    environment:
-      - VITE_API_URL=http://localhost:8000
+    volumes:
+      - ./apps/frontend:/app
+      - /app/node_modules
+    working_dir: /app
+    command: pnpm run dev --host

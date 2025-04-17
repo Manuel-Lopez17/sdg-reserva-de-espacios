@@ -1,21 +1,23 @@
+# apps/frontend/Dockerfile
+
 # Use Node 18 Alpine as the base image
 FROM node:18-alpine
 
-# Set the working directory
-WORKDIR /src
+# Set the working directory inside the container
+WORKDIR /app
 
-# Copy package.json and pnpm-lock.yaml
+# Copy only the necessary files
 COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies
+# Enable and install pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
 RUN pnpm install
 
-# Copy the rest of the frontend project files
+# Copy the rest of the app
 COPY . .
 
-# Expose the port for the frontend app
+# Expose the port for Vite
 EXPOSE 5173
 
-# Run the frontend app
+# Start the app
 CMD ["pnpm", "run", "dev", "--host"]

@@ -9,6 +9,7 @@ export default function ReservePage() {
   const [space, setSpace] = useState(null)
   const [date, setDate] = useState('')
   const [error, setError] = useState(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
     getSpaceById(id).then(setSpace).catch(console.error)
@@ -17,6 +18,7 @@ export default function ReservePage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
+    setIsSubmitting(true)
 
     try {
       await createReservation({
@@ -31,10 +33,12 @@ export default function ReservePage() {
       } else {
         setError('Error al crear la reserva')
       }
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
-  if (!space) return <p>Cargando espacio...</p>
+  if (!space) return <p className="text-gray-600">Cargando espacio...</p>
 
   return (
     <>
@@ -42,7 +46,7 @@ export default function ReservePage() {
       {error && <p className="text-red-500">{error}</p>}
       <form onSubmit={handleSubmit} className="space-y-3">
         <div>
-          <label>Fecha:</label>
+          <label className="block mb-1">Fecha:</label>
           <input
             type="date"
             value={date}
@@ -52,8 +56,14 @@ export default function ReservePage() {
             required
           />
         </div>
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 hover:cursor-pointer">
-          Confirmar Reserva
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className={`px-4 py-2 rounded text-white ${
+            isSubmitting ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 hover:cursor-pointer'
+          }`}
+        >
+          {isSubmitting ? 'Procesando...' : 'Confirmar Reserva'}
         </button>
       </form>
     </>

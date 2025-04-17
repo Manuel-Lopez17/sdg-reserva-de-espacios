@@ -8,11 +8,20 @@ import ReservaCard from '../components/ReservaCard'
 
 export default function AdminPanel() {
   const [reservas, setReservas] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [noReservations, setNoReservations] = useState(false)
 
   useEffect(() => {
     getPendingReservations()
-      .then(setReservas)
-      .catch(err => console.error('Error al obtener reservas pendientes:', err))
+      .then(data => {
+        setReservas(data)
+        setLoading(false)
+        setNoReservations(data.length === 0)
+      })
+      .catch(err => {
+        console.error('Error al obtener reservas pendientes:', err)
+        setLoading(false)
+      })
   }, [])
 
   const manejarAccion = async (id, accion) => {
@@ -26,10 +35,14 @@ export default function AdminPanel() {
     }
   }
 
+  if (loading) {
+    return <div className="text-center">Cargando...</div>
+  }
+
   return (
     <>
       <h1 className="text-2xl font-bold mb-4">Reservas Pendientes</h1>
-      {reservas.length === 0 ? (
+      {noReservations ? (
         <p>No hay reservas pendientes.</p>
       ) : (
         <ul className="space-y-4">
